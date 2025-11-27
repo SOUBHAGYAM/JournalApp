@@ -5,6 +5,7 @@ import com.Ilearn.journalApp.Repository.UserRepository;
 import com.Ilearn.journalApp.api.response.WeatherResponse;
 import com.Ilearn.journalApp.service.UserService;
 import com.Ilearn.journalApp.service.WeatherService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
+@Tag(name="User APIs",description = "Read, Update & Delete User")
 public class UserController {
 
     @Autowired

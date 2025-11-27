@@ -4,6 +4,10 @@ import com.Ilearn.journalApp.Entity.JournalEntry;
 import com.Ilearn.journalApp.Entity.User;
 import com.Ilearn.journalApp.service.JournalEntryService;
 import com.Ilearn.journalApp.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/journal")
+@Tag(name = "Journal APIs")
 public class JournalEntryControllerV2 {
 
     @Autowired
@@ -29,6 +34,7 @@ public class JournalEntryControllerV2 {
     private UserService userService;
 
     @GetMapping
+    @Operation(summary = "Get all journal entries of a user")
     public ResponseEntity<?> getAllJournalEntriesofUser() {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -69,19 +75,35 @@ public class JournalEntryControllerV2 {
     }
 
     @GetMapping("/id/{myid}")
-    public ResponseEntity<JournalEntry> getJournalEntrybyid(@PathVariable ObjectId myid) {
+    public ResponseEntity<JournalEntry> getJournalEntryById(
+            @Parameter(
+                    name = "myid",
+                    description = "Journal Entry ID (MongoDB ObjectId)",
+                    required = true,
+                    schema = @Schema(type = "string", example = "67c3f3e3dbbf5c2ef78cf91e")
+            )
+            @PathVariable("myid") String myid) {
+
+        ObjectId objectId = new ObjectId(myid);
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
+
         User user = userService.findByUsername(username);
-        List<JournalEntry> collect = user.getJournalEntries().stream().filter(x -> x.getId().equals(myid)).collect(Collectors.toList());
+
+        List<JournalEntry> collect = user.getJournalEntries().stream()
+                .filter(x -> x.getId().equals(objectId))
+                .collect(Collectors.toList());
+
         if (!collect.isEmpty()) {
-            Optional<JournalEntry> journalEntryById = journalEntryService.getJournalEntryById(myid);
-            if (journalEntryById.isPresent()) {
-                return new ResponseEntity<JournalEntry>(journalEntryById.get(), HttpStatus.OK);
-            }
+            Optional<JournalEntry> journalEntryById = journalEntryService.getJournalEntryById(objectId);
+            return journalEntryById.map(entry -> new ResponseEntity<>(entry, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
         }
-        return new ResponseEntity<JournalEntry>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
 
     @DeleteMapping("/id/{myid}")
     public ResponseEntity<?> deleteJournalEntrybyid(@PathVariable ObjectId myid) {
