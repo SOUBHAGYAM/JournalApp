@@ -1,0 +1,20 @@
+package com.Ilearn.journalApp.repository;
+
+
+import com.Ilearn.journalApp.Repository.UserRepository;
+import com.Ilearn.journalApp.Repository.UserRepositoryImpl;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+public class UserRepositoryImplTests {
+
+    @Autowired
+    private UserRepositoryImpl userRepositoryImpl;
+
+    @Test
+    public void findByUsername() {
+        userRepositoryImpl.getusersforSA();
+    }
+}
