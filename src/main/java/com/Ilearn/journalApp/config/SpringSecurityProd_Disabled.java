@@ -19,7 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @Profile("Prod")
 //in prod we authenticate all request
-public class SpringSecurityProd {
+public class SpringSecurityProd_Disabled {
 
 
 

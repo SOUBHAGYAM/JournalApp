@@ -19,52 +19,71 @@ import java.util.Optional;
 @Slf4j
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	@Autowired
+	private UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder =
+	        new BCryptPasswordEncoder();
 
-   // private static final Logger logger = LoggerFactory.getLogger(UserService.class); used slf4j instead of creating instance
+	// private static final Logger logger =
+	// LoggerFactory.getLogger(UserService.class); used slf4j instead of creating
+	// instance
 
-    public boolean saveNewUser(User user) {
-        try {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setRoles(Arrays.asList("User"));
-            userRepository.save(user);
-            return true;
-        } catch (Exception e) {
-            log.error("Error saving entry for {} :",user.getUsername(), e);
-            log.warn("Hey hey");
-            log.debug("Hey hey");
-            log.trace("Hey hey");
-            log.info("Hey hey");
-            return false;
-        }
+	public boolean saveNewUser(User user) {
 
-    }
+	    try {
 
-    public void saveUser(User user) {
-        userRepository.save(user);
-    }
+	        System.out.println("USERNAME => " + user.getUsername());
 
-    public List<User> getAll() {
-        return userRepository.findAll();
-    }
+	        System.out.println("PASSWORD => " + user.getPassword());
 
-    public Optional<User> getUserById(ObjectId id) {
-        return userRepository.findById(id);
-    }
+	        user.setPassword(
+	                passwordEncoder.encode(
+	                        user.getPassword()
+	                )
+	        );
 
-    public void deleteUseryId(ObjectId id) {
-        userRepository.deleteById(id);
-    }
+	        user.setRoles(
+	        		Arrays.asList("USER")
+	        );
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
+	        User savedUser =
+	                userRepository.save(user);
 
-    public void saveAdmin(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Arrays.asList("User", "Admin"));
-        userRepository.save(user);
-    }
+	        System.out.println("SAVED USER => " + savedUser);
+
+	        return true;
+
+	    } catch (Exception e) {
+
+	        e.printStackTrace();
+
+	        throw new RuntimeException(e);
+	    }
+	}
+
+	public void saveUser(User user) {
+		userRepository.save(user);
+	}
+
+	public List<User> getAll() {
+		return userRepository.findAll();
+	}
+
+	public Optional<User> getUserById(ObjectId id) {
+		return userRepository.findById(id);
+	}
+
+	public void deleteUseryId(ObjectId id) {
+		userRepository.deleteById(id);
+	}
+
+	public User findByUsername(String username) {
+		return userRepository.findByUsername(username);
+	}
+
+	public void saveAdmin(User user) {
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setRoles(Arrays.asList("USER", "ADMIN"));
+		userRepository.save(user);
+	}
 }

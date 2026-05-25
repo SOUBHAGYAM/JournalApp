@@ -69,4 +69,9 @@ public class JournalEntryService {
         }
         return removed;
     }
+
+    public void deleteById(ObjectId myid) {
+
+        journalEntryRepository.deleteById(myid);
+    }
 }

@@ -2,6 +2,7 @@ package com.Ilearn.journalApp.Controller;
 
 import com.Ilearn.journalApp.Entity.JournalEntry;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/_journal")
+@RequestMapping("/-journal")
+@CrossOrigin(origins ="http://localhost:4200")
 public class JournalEntryController {
 
     private Map<Long,JournalEntry> journalEntries = new HashMap();
